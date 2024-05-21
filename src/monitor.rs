@@ -12,11 +12,13 @@ pub struct Monitor {
     width: u32,
     height: u32,
     scale: f32,
-    availableModes: Vec<Modes>,
+    #[serde(rename = "availableModes")]
+    available_modes: Vec<Modes>,
 }
 
 pub struct Modes {
     width: u32,
     height: u32,
-    refreshRate: f32,
+    #[serde(rename = "refreshRate")]
+    refresh_rate: f32,
 }
