@@ -4,7 +4,7 @@ use serde::{Deserialize, Deserializer, Serialize};
 /// Only the useful informations are deserialised.
 /// See the command output for more informations.
 /// Compatible with hyprland 0.4.0
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct Monitor {
     id: u32,
@@ -16,7 +16,7 @@ pub struct Monitor {
     available_modes: Vec<Modes>,
 }
 
-#[derive(PartialEq, Serialize)]
+#[derive(PartialEq, Serialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct Modes {
     width: u32,
