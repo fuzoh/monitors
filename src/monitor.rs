@@ -1,4 +1,5 @@
 use std::cmp::Ordering;
+use std::fmt::Display;
 use serde::{Deserialize, Deserializer, Serialize};
 
 /// This structure represent data returned by the `hyprctl -j monitors all` command
@@ -28,7 +29,7 @@ pub struct Mode {
 
 impl Mode {
     pub fn pixels(&self) -> u32 {
-        self.height + self.width
+        self.width + self.height
     }
 }
 
@@ -44,8 +45,14 @@ impl Ord for Mode {
     }
 }
 
+impl Display for Mode {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", format!("{} {}", self.width, self.height))
+    }
+}
+
 impl Monitor {
-    pub fn bigest_mode(&self) -> Option<&Mode> {
+    pub fn biggest_mode(&self) -> Option<&Mode> {
         self.available_modes.iter().max()
     }
 }
