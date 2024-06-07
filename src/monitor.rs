@@ -1,3 +1,4 @@
+use std::cmp::Ordering;
 use serde::{Deserialize, Deserializer, Serialize};
 
 /// This structure represent data returned by the `hyprctl -j monitors all` command
@@ -8,25 +9,50 @@ use serde::{Deserialize, Deserializer, Serialize};
 #[serde(rename_all = "camelCase")]
 pub struct Monitor {
     id: u32,
-    name: String,
+    pub(crate) name: String,
     description: String,
     width: u32,
     height: u32,
     scale: f32,
-    available_modes: Vec<Modes>,
+    available_modes: Vec<Mode>,
 }
 
-#[derive(PartialEq, Serialize, Debug)]
+#[derive(PartialEq, Serialize, Debug, Eq)]
 #[serde(rename_all = "camelCase")]
-pub struct Modes {
+pub struct Mode {
+
     width: u32,
     height: u32,
-    refresh_rate: f32,
+    refresh_rate: String,
+}
+
+impl Mode {
+    pub fn pixels(&self) -> u32 {
+        self.height + self.width
+    }
+}
+
+impl PartialOrd for Mode {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.pixels().cmp(&other.pixels()))
+    }
+}
+
+impl Ord for Mode {
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.pixels().cmp(&other.pixels())
+    }
+}
+
+impl Monitor {
+    pub fn bigest_mode(&self) -> Option<&Mode> {
+        self.available_modes.iter().max()
+    }
 }
 
 /// Custom deserialisation to transform monitor resolution string into Modes struct
 /// Input "3840x2400@60.00Hz"
-impl<'de> Deserialize<'de> for Modes {
+impl<'de> Deserialize<'de> for Mode {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
@@ -38,8 +64,8 @@ impl<'de> Deserialize<'de> for Modes {
         let mut resolution_parts = resolution.split('x');
         let width: u32 = resolution_parts.next().unwrap().parse().unwrap();
         let height: u32 = resolution_parts.next().unwrap().parse().unwrap();
-        let refresh_rate: f32 = refresh_rate.trim_end_matches("Hz").parse().unwrap();
-        Ok(Modes {
+        let refresh_rate: String = refresh_rate.trim_end_matches("Hz").parse().unwrap();
+        Ok(Mode {
             width,
             height,
             refresh_rate,
