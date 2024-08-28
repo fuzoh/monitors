@@ -7,10 +7,10 @@
 
 ## Todo's
 
-[x] Retrieve list of active monitors (name, resolution)
-[ ] Propose default possible configurations, inferred from monitors available.
-[ ] Check if configuration is compatible, apply it
-[ ] Add parameters to scope the type of proposed configurations to specific needs.
+- [x] Retrieve list of active monitors (name, resolution)
+- [ ] Propose default possible configurations, inferred from monitors available.
+- [ ] Check if configuration is compatible, apply it
+- [ ] Add parameters to scope the type of proposed configurations to specific needs.
 
 ## new approach
 
