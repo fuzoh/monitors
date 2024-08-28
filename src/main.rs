@@ -1,13 +1,23 @@
-use std::io::Write;
-use std::process::{Command, Stdio};
+use clap::Parser;
 
-use std::string::String;
+mod cli_arguments;
+mod configuration;
 mod monitor;
 
-use monitor::Monitor;
+use crate::cli_arguments::Args;
+use crate::configuration::Configuration;
+// use monitor::Monitor;
 
 fn main() {
-    // Get the monitors form hyprctl
+    // Load or create the configuration file
+    let config: Configuration = confy::load("monitors", None).unwrap();
+    // Parse command arguments
+    let args = Args::parse();
+
+    println!("{}", config.default_scaling_factor);
+    println!("{}", args.name);
+
+    /*    // Get the monitors form hyprctl
     let hyprctl_output = Command::new("hyprctl")
         .arg("-j")
         .arg("monitors")
@@ -50,5 +60,5 @@ fn main() {
     let selected_monitor =
         String::from_utf8(tofi_select_monitors.wait_with_output().expect("").stdout)
             .expect("Failed to read tofi output");
-    println!("Selected monitor {}", selected_monitor)
+    println!("Selected monitor {}", selected_monitor)*/
 }

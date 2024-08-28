@@ -1,6 +1,6 @@
+use serde::{Deserialize, Deserializer, Serialize};
 use std::cmp::Ordering;
 use std::fmt::Display;
-use serde::{Deserialize, Deserializer, Serialize};
 
 /// This structure represent data returned by the `hyprctl -j monitors all` command
 /// Only the useful informations are deserialised.
@@ -21,7 +21,6 @@ pub struct Monitor {
 #[derive(PartialEq, Serialize, Debug, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct Mode {
-
     width: u32,
     height: u32,
     refresh_rate: String,
