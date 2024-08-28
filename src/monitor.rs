@@ -6,24 +6,35 @@ use std::fmt::Display;
 /// Only the useful informations are deserialised.
 /// See the command output for more informations.
 /// Compatible with hyprland 0.4.0
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Debug, Eq, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub struct Monitor {
-    id: u32,
-    pub(crate) name: String,
-    description: String,
-    width: u32,
-    height: u32,
-    scale: f32,
-    available_modes: Vec<Mode>,
+    pub id: u32,
+    pub name: String,
+    pub description: String,
+    pub width: u32,
+    pub height: u32,
+    pub available_modes: Vec<Mode>,
+}
+
+impl PartialOrd for Monitor {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.id.cmp(&other.id))
+    }
+}
+
+impl Ord for Monitor {
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.id.cmp(&other.id)
+    }
 }
 
 #[derive(PartialEq, Serialize, Debug, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct Mode {
-    width: u32,
-    height: u32,
-    refresh_rate: String,
+    pub width: u32,
+    pub height: u32,
+    pub refresh_rate: String,
 }
 
 impl Mode {

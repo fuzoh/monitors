@@ -1,7 +1,10 @@
 use clap::Parser;
 
 #[derive(Parser, Debug)]
-#[command(version, about, long_about = None)]
+#[command(name = "Monitors")]
+#[command(about = "Quickly manage your monitors")]
+#[command(version, long_about = None)]
 pub struct Args {
-    pub name: String,
+    #[arg(short, long)]
+    pub auto: bool,
 }

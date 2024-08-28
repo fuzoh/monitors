@@ -1,35 +1,62 @@
+use std::error::Error;
 use clap::Parser;
 
 mod cli_arguments;
 mod configuration;
 mod monitor;
+mod hyprctl_service;
 
 use crate::cli_arguments::Args;
 use crate::configuration::Configuration;
+use crate::hyprctl_service::get_monitors;
+use crate::monitor::Monitor;
 // use monitor::Monitor;
 
 fn main() {
     // Load or create the configuration file
-    let config: Configuration = confy::load("monitors", None).unwrap();
+    let config: Configuration = confy::load("monitors", None)
+        .expect("Failed loading the configuration file (check syntax and available keys).");
+
     // Parse command arguments
     let args = Args::parse();
 
+    let available_monitors = get_monitors();
+
+    if available_monitors.len() < 1 {
+        eprintln!("No monitors found.");
+        panic!();
+    }
+
+    // If specified in config, find it
+    // If none specified, the first one
+    let mut default_monitor: Option<&Monitor> = None;
+
+    if let Some(id) = config.default_monitor.id {
+        default_monitor = available_monitors.iter().find(|monitor| {
+            monitor.id == id
+        })
+    } else if let Some(name) = config.default_monitor.name  {
+        default_monitor = available_monitors.iter().find(|monitor| {
+            monitor.name == name
+        })
+    } else if let Some(description) = config.default_monitor.description {
+        default_monitor = available_monitors.iter().find(|monitor| {
+            monitor.description == description
+        })
+    } else { 
+        default_monitor = available_monitors.iter().min() // Take the first ID
+    }
+
     println!("{}", config.default_scaling_factor);
-    println!("{}", args.name);
+    println!("{}", args.auto);
+    match default_monitor {
+        Some(m) => println!("Default monitor is {}", m.name) ,
+        None => println!("No default monitor selected")
+    }
+
 
     /*    // Get the monitors form hyprctl
-    let hyprctl_output = Command::new("hyprctl")
-        .arg("-j")
-        .arg("monitors")
-        .arg("all")
-        .output()
-        .expect("Failed to get monitors from hyprctl");
 
-    let output_string = String::from_utf8(hyprctl_output.stdout)
-        .expect("Failed to parse the command output as utf8 string");
-
-    let monitors: Vec<Monitor> =
-        serde_json::from_str(&output_string).expect("Failed to parse the command output as json");
 
     let monitors_string = monitors
         .iter()
