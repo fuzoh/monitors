@@ -1,6 +1,6 @@
 # Monitors
 
-**v0.1.0 :** [Read changelog](./CHANGELOG.md) <!-- x-release-please-version -->
+**v0.2.0 :** [Read changelog](./CHANGELOG.md) <!-- x-release-please-version -->
 
 > An ultra-light, ultra simple binary to change monitor configuration in [hyprland](https://hyprland.org/).
 > Execute it on monitor plug/unplug or on shortcut.
